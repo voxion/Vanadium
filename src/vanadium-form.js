@@ -60,7 +60,7 @@ VanadiumForm.prototype = {
     this.validation_elements = [validation_element];
     this.form = validation_element.element.form;
     var self = this;
-    $(this.form).submit(function() {
+    var on_form_submit = function() {
       var validation_result = self.validate();
 
       var success = true;
@@ -79,7 +79,11 @@ VanadiumForm.prototype = {
         self.decorate();
         return false;
       }
-    });
+    };
+
+    //$(this.form).submit(on_form_submit);
+    $(this.form).find(':submit').click(function(){on_form_submit(); return false});
+
     this.form.decorate = function() {
       self.decorate();
     }
