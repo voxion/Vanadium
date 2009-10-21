@@ -246,10 +246,10 @@ Vanadium.setupValidatorTypes = function() {
     ,
     ['format',
       function(v, p) {
-        var params = p.split('/');
-        if (params.length == 3 && params[0] == "") {
+        var params = p.match(/^\/(((\\\/)|[^\/])*)\/(((\\\/)|[^\/])*)$/);        
+        if (params.length == 7) {
           var pattern = params[1];
-          var attributes = params[2];
+          var attributes = params[4];
           try
           {
             var exp = new RegExp(pattern, attributes);
