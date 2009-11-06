@@ -79,10 +79,11 @@ VanadiumForm.prototype = {
         self.decorate();
         return false;
       }
+      return success;
     };
 
     //$(this.form).submit(on_form_submit);
-    $(this.form).find(':submit').click(function(){on_form_submit(); return false});
+    $(this.form).find(':submit').click(function(){return on_form_submit();});
 
     this.form.decorate = function() {
       self.decorate();
