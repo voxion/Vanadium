@@ -34,36 +34,35 @@
  @end
  =====================================================================
 */
-
-
 //-------------------- vanadium-jquery.js -----------------------------
 
+var Vanadium;
 
 Vanadium = {};
-Vanadium.Version = '0.1';
+Vanadium.Version = '0.1.1';
 Vanadium.CompatibleWithJQuery = '1.3.2';
 Vanadium.Type = "jquery";
 
-if ($().jquery.indexOf(Vanadium.CompatibleWithJQuery) != 0 && window.console && window.console.warn)
+if (jQuery().jquery.indexOf(Vanadium.CompatibleWithJQuery) !== 0 && window.console && window.console.warn) {
   console.warn("This version of Vanadium is tested with jQuery " + Vanadium.CompatibleWithJQuery +
-               " it may not work as expected with this version (" + $().jquery + ")");
+               " it may not work as expected with this version (" + JQuery().jquery + ")");
+}
+Vanadium.each = jQuery.each;
 
-Vanadium.each = $.each;
-
-Vanadium.all_elements = function() {
-  return $('*');
+Vanadium.all_elements = function () {
+  return jQuery('*');
 };
 
-Vanadium.partition = function(elements, dyscriminator) {
+Vanadium.partition = function (elements, dyscriminator) {
   var left = [];
   var right = [];
-  Vanadium.each(elements, function() {
+  Vanadium.each(elements, function () {
     if (dyscriminator(this)) {
       left.push(this);
     } else {
       right.push(this);
     }
-    ;
+    
   });
   return [left, right];
 };
@@ -74,33 +73,33 @@ Vanadium.partition = function(elements, dyscriminator) {
 //-------------------- vanadium-hashmap.js -----------------------------
 
 
-var HashMap = function() {
+var HashMap = function () {
   this.initialize();
-}
+};
 
 HashMap.prototype = {
   hashkey_prefix: "<#HashMapHashkeyPerfix>",
   hashcode_field: "<#HashMapHashcodeField>",
   hashmap_instance_id: 0,
 
-  initialize: function() {
+  initialize: function () {
     this.backing_hash = {};
     this.code = 0;
     this.hashmap_instance_id += 1;
     this.instance_id = this.hashmap_instance_id;
   },
 
-  hashcodeField: function() {
+  hashcodeField: function () {
     return this.hashcode_field + this.instance_id;
   },
   /*
    maps value to key returning previous assocciation
    */
-  put: function(key, value) {
+  put: function (key, value) {
     var prev;
 
     if (key && value) {
-      var hashCode;
+	var hashCode;
       if (typeof(key) === "number" || typeof(key) === "string") {
         hashCode = key;
       } else {
@@ -120,7 +119,7 @@ HashMap.prototype = {
   /*
    returns value associated with given key
    */
-  get: function(key) {
+  get: function (key) {
     var value;
     if (key) {
       var hashCode;
@@ -140,9 +139,9 @@ HashMap.prototype = {
    Returns true if the assocciation existed, false otherwise
    */
   del: function(key) {
-    var success = false;
+    var success = false, hashCode;
     if (key) {
-      var hashCode;
+      
       if (typeof(key) === "number" || typeof(key) === "string") {
         hashCode = key;
       } else {
@@ -168,13 +167,14 @@ HashMap.prototype = {
   each: function(callback, args) {
     var key;
     for (key in this.backing_hash){
-      if (callback.call(this.backing_hash[key][1], this.backing_hash[key][0], this.backing_hash[key][1]) === false)
+      if (callback.call(this.backing_hash[key][1], this.backing_hash[key][0], this.backing_hash[key][1]) === false) {
         break;
+		}
     }
     return this;
   },
-  toString: function() {
-    return "HashMapJS"
+  toString: function () {
+    return "HashMapJS";
   }
 
 }
@@ -186,8 +186,8 @@ HashMap.prototype = {
 Vanadium.containers = new HashMap();
 
 var ContainerValidation = function(html_element) {
-  this.initialize(html_element)
-}
+  this.initialize(html_element);
+};
 
 ContainerValidation.prototype = {
   initialize: function(html_element) {
@@ -210,24 +210,24 @@ ContainerValidation.prototype = {
       }
     }
     if (valid === undefined) {
-      $(this.html_element).removeClass(Vanadium.config.invalid_class);
-      $(this.html_element).removeClass(Vanadium.config.valid_class);
+      jQuery(this.html_element).removeClass(Vanadium.config.invalid_class);
+      jQuery(this.html_element).removeClass(Vanadium.config.valid_class);
     } else if (valid) {
-      $(this.html_element).removeClass(Vanadium.config.invalid_class);
-      $(this.html_element).addClass(Vanadium.config.valid_class);
+      jQuery(this.html_element).removeClass(Vanadium.config.invalid_class);
+      jQuery(this.html_element).addClass(Vanadium.config.valid_class);
     } else {
-      $(this.html_element).removeClass(Vanadium.config.valid_class);
-      $(this.html_element).addClass(Vanadium.config.invalid_class);
+      jQuery(this.html_element).removeClass(Vanadium.config.valid_class);
+      jQuery(this.html_element).addClass(Vanadium.config.invalid_class);
     }
   }
-}
+};
 
 //-------------------- vanadium-form.js -----------------------------
 
 
 var VanadiumForm = function(element) {
   this.initialize(element);
-}
+};
 
 Vanadium.forms = new HashMap();
 
@@ -242,7 +242,7 @@ VanadiumForm.add_element = function(validation_element) {
       Vanadium.forms.put(form, vanadum_form);
     }
   }
-}
+};
 
 
 VanadiumForm.prototype = {
@@ -257,12 +257,12 @@ VanadiumForm.prototype = {
       var success = true;
       validation_result.each(function(_element, validation_results) {
         for (var r in validation_results) {
-          if (validation_results[r].success == false) {
+          if (validation_results[r].success === false) {
             success = false;
             break;
           }
         }
-        if (success == false) {
+        if (success === false) {
           return false;// break from hashmap iteration
         }
       });
@@ -274,11 +274,11 @@ VanadiumForm.prototype = {
     };
 
     //$(this.form).submit(on_form_submit);
-    $(this.form).find(':submit').click(function(){return on_form_submit();});
+    jQuery(this.form).find(':submit').click(function(){return on_form_submit();});
 
     this.form.decorate = function() {
       self.decorate();
-    }
+    };
   },
 
   validate: function() {
@@ -291,14 +291,14 @@ VanadiumForm.prototype = {
   },
 
   decorate: function(validation_results) {
-    if (arguments.length == 0) {
+    if (arguments.length === 0) {
       validation_results = this.validate();
     }
     validation_results.each(function(element, element_validation_results) {
       element.decorate(element_validation_results);
     });
   }
-}
+};
 
 
 //-------------------- vanadium-base.js -----------------------------
@@ -320,18 +320,18 @@ Vanadium.config = {
   prefix: ':',
   separator: ';',
   reset_defer_timeout: 100
-}
+};
 
-Vanadium.empty_advice_marker_class = '-vanadium-empty-advice-'
+Vanadium.empty_advice_marker_class = '-vanadium-empty-advice-';
 
 //validation rules
-Vanadium.rules = {}
+Vanadium.rules = {};
 
 
 Vanadium.init = function() {
   this.setupValidatorTypes();
   this.scan_dom();
-}
+};
 
 
 
@@ -345,7 +345,7 @@ Vanadium.addValidatorTypes = function(validators_args) {
           function() {
             Vanadium.addValidatorType.apply(self, this);
           }
-          )
+          );
 };
 
 
@@ -357,9 +357,9 @@ Vanadium.scan_dom = function() {
             if (Vanadium.is_input_element(child)) {
               var element_validation = new ElementValidation(child);
 
-              if (child.id)
-                Vanadium.elements_validators_by_id[child.id] = element_validation
-
+              if (child.id) {
+                Vanadium.elements_validators_by_id[child.id] = element_validation;
+				}
               VanadiumForm.add_element(element_validation);
 
               //create validation rules based on class markup
@@ -386,28 +386,28 @@ Vanadium.scan_dom = function() {
             } else {
               Vanadium.add_validation_container(child);
             }
-          })
-}
+          });
+};
 
 Vanadium.add_validation_container = function(element) {
   var class_names = element.className.split(' ');
   Vanadium.each(class_names,
           function() {
             var parameters = Vanadium.parse_class_name(this);
-            if (parameters[0] == 'container') {
+            if (parameters[0] === 'container') {
               Vanadium.containers.put(element, new ContainerValidation(element));
-              return true
+              return true;
             }
           });
   Vanadium.each(Vanadium.get_rules(element.id),
           function() {
             var rule = this;
-            if (rule == 'container') {
+            if (rule === 'container') {
               Vanadium.containers.put(element, new ContainerValidation(element));
-              return true
+              return true;
             }
           });
-}
+};
 
 Vanadium.get_rules = function(element_id) {
   var rule_from_string_or_hash = function(r) {
@@ -420,7 +420,7 @@ Vanadium.get_rules = function(element_id) {
     } else {
       return undefined;
     }
-  }
+  };
   //
   var rules = [];
   //
@@ -437,39 +437,35 @@ Vanadium.get_rules = function(element_id) {
     rules.push(rule_from_string_or_hash(rs));
   }
   return rules;
-}
+};
 
 Vanadium.parse_class_name = function(class_name) {
-  if (class_name.indexOf(Vanadium.config.prefix) == 0) {
-    var v_params = class_name.substr(Vanadium.config.prefix.length).split(Vanadium.config.separator)
+  if (class_name.indexOf(Vanadium.config.prefix) === 0) {
+    var v_params = class_name.substr(Vanadium.config.prefix.length).split(Vanadium.config.separator);
     for (var key in v_params) {
-      if (v_params[key] == "") {
-        v_params[key] = undefined
+      if (v_params[key] === "") {
+        v_params[key] = undefined;
       }
     }
     return v_params;
   } else {
     return [];
   }
-}
+};
 
 Vanadium.add_validation_instance = function(element_validation, parameters) {
-  var v_name = parameters[0];
-  var v_param = parameters[1];
-  var v_advice_id = parameters[2];
-  var validator_type = Vanadium.validators_types[v_name]
+  var v_name = parameters[0], v_param = parameters[1], v_advice_id = parameters[2], validator_type = Vanadium.validators_types[v_name];
   if (validator_type) {
     element_validation.add_validation_instance(validator_type, v_param, v_advice_id);
   }
-}
+};
 
 Vanadium.add_validation_modifier = function(element_validation, parameters) {
-  var m_name = parameters[0];
-  var m_param = parameters[1];
-  if (m_name == 'only_on_blur' || m_name == 'only_on_submit' || m_name == 'wait' || m_name == 'advice') {
+  var m_name = parameters[0], m_param = parameters[1];
+  if (m_name === 'only_on_blur' || m_name === 'only_on_submit' || m_name === 'wait' || m_name === 'advice') {
     element_validation.add_validation_modifier(m_name, m_param);
   }
-}
+};
 
 Vanadium.validate = function() {
   var validation = new HashMap();
@@ -478,14 +474,14 @@ Vanadium.validate = function() {
             validation.put(this.element, this.validate());
           });
   return validation;
-}
+};
 
 Vanadium.decorate = function(validation_results) {
   if (typeof validation_results === "object") {
-    if (validation_results.toString() == "HashMapJS") {
+    if (validation_results.toString() === "HashMapJS") {
       validation_results.each(function(element, element_validation_results) {
         element.decorate(element_validation_results);
-      })
+      });
     } else {
       var element_id;
       for (element_id in validation_results) {
@@ -496,14 +492,14 @@ Vanadium.decorate = function(validation_results) {
       }
     }
   }
-}
+};
 
 Vanadium.reset = function() {
   Vanadium.each(this.elements_validators,
           function() {
             this.reset();
           });
-}
+};
 
 
 
@@ -517,28 +513,28 @@ Vanadium.reset = function() {
 
 
 Vanadium.isArray = function(object) {
-  return object != null && typeof object == "object" &&
+  return object !== null && typeof object === "object" &&
          'splice' in object && 'join' in object;
 
-}
+};
 
 Vanadium.isFunction = function(object) {
-  return object != null && object.toString() === "[object Function]";
-}
+  return object !== null && object.toString() === "[object Function]";
+};
 
 Vanadium.extend = function(extension) {
   var args = [Vanadium];
   for (var idx = 0; idx < arguments.length; idx++) {
     args.push(arguments[idx]);
   }
-  return $.extend.apply($, args);
-}
+  return jQuery.extend.apply(jQuery, args);
+};
 
 Vanadium.bind = function(fun, context) {
   return function() {
     return fun.apply(context, arguments);
-  }
-}
+  };
+};
 
 //-------------------- vanadium-dom.js -----------------------------
 
@@ -547,39 +543,39 @@ Vanadium.extend(
 {
 
   /**
-   *	gets the type of element, to check whether it is compatible
+   *    gets the type of element, to check whether it is compatible
    */
   getElementType: function(element) {
     switch (true) {
-      case (element.nodeName.toUpperCase() == 'TEXTAREA'):
+      case (element.nodeName.toUpperCase() === 'TEXTAREA'):
         return Vanadium.TEXTAREA;
-      case (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'TEXT'):
+      case (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'TEXT'):
         return Vanadium.TEXT;
-      case (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'PASSWORD'):
+      case (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'PASSWORD'):
         return Vanadium.PASSWORD;
-      case (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'CHECKBOX'):
+      case (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'CHECKBOX'):
         return Vanadium.CHECKBOX;
-      case (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'FILE'):
+      case (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'FILE'):
         return Vanadium.FILE;
-      case (element.nodeName.toUpperCase() == 'SELECT'):
+      case (element.nodeName.toUpperCase() === 'SELECT'):
         return Vanadium.SELECT;
-      case (element.nodeName.toUpperCase() == 'INPUT'):
+      case (element.nodeName.toUpperCase() === 'INPUT'):
         throw new Error('Vanadium::getElementType - Cannot use Vanadium on an ' + element.type + ' input!');
       default:
         throw new Error('Vanadium::getElementType - Element must be an input, select, or textarea!');
     }
-    ;
+    
   },
   is_input_element : function(element) {
-    return (element.nodeName.toUpperCase() == 'TEXTAREA') ||
-           (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'TEXT') ||
-           (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'PASSWORD') ||
-           (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'CHECKBOX') ||
-           (element.nodeName.toUpperCase() == 'INPUT' && element.type.toUpperCase() == 'FILE') ||
-           (element.nodeName.toUpperCase() == 'SELECT')
+    return (element.nodeName.toUpperCase() === 'TEXTAREA') ||
+           (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'TEXT') ||
+           (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'PASSWORD') ||
+           (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'CHECKBOX') ||
+           (element.nodeName.toUpperCase() === 'INPUT' && element.type.toUpperCase() === 'FILE') ||
+           (element.nodeName.toUpperCase() === 'SELECT');
   },
   /**
-   *	makes a span containg the passed or failed advice
+   *    makes a span containg the passed or failed advice
    *
    * @return {HTMLSpanObject} - a span element with the advice message in it
    */
@@ -593,7 +589,7 @@ Vanadium.extend(
   },
 
   /**
-   *	adds the class of the element/advice/container to indicte if valid or not
+   *    adds the class of the element/advice/container to indicte if valid or not
    */
   addValidationClass: function(element, valid) {
     if (element) {
@@ -603,19 +599,19 @@ Vanadium.extend(
       } else {
         element.className += ' ' + Vanadium.config.invalid_class;
       }
-      ;
+      
     }
-    ;
+    
   },
   /**
-   *	removes the class that has been applied to the element/advice/container to indicte if valid or not
+   *    removes the class that has been applied to the element/advice/container to indicte if valid or not
    */
   removeValidationClass: function(element) {
     if (element) {
-      if (element.className.indexOf(Vanadium.config.invalid_class) != -1) element.className = element.className.split(Vanadium.config.invalid_class).join(' ');
-      if (element.className.indexOf(Vanadium.config.valid_class) != -1) element.className = element.className.split(Vanadium.config.valid_class).join(' ');
+      if (element.className.indexOf(Vanadium.config.invalid_class) !== -1) { element.className = element.className.split(Vanadium.config.invalid_class).join(' '); }
+      if (element.className.indexOf(Vanadium.config.valid_class) !== -1) { element.className = element.className.split(Vanadium.config.valid_class).join(' '); }
     }
-    ;
+    
   },
   /** element types constants ****/
   TEXTAREA: 1,
@@ -632,7 +628,7 @@ Vanadium.extend(
 
 
 ElementValidation = function(element) {
-  this.initialize(element)
+  this.initialize(element);
 };
 ElementValidation.prototype = {
 
@@ -654,44 +650,44 @@ ElementValidation.prototype = {
     this.validations.push(new Validation(this.element, validator_type, param, advice_id));
   },
   add_validation_modifier: function(modifier, param) {
-    if (modifier == 'only_on_blur') {
+    if (modifier === 'only_on_blur') {
       //  whether you want it to validate as you type or only on blur  (DEFAULT: false)
-      this.only_on_blur = true
-    } else if (modifier == 'only_on_submit') {
+      this.only_on_blur = true;
+    } else if (modifier === 'only_on_submit') {
       //  whether should be validated only when the form it belongs to is submitted (DEFAULT: false)
-      this.only_on_submit = true
-    } else if (modifier == 'wait') {
+      this.only_on_submit = true;
+    } else if (modifier === 'wait') {
       //  the time you want it to pause from the last keystroke before it validates (ms) (DEFAULT: 0)
       var milisesonds = parseInt(param);
-      if (milisesonds != NaN && typeof(milisesonds) === "number") {
+      if (!isNaN(milisesonds) && typeof(milisesonds) === "number") {
         this.wait = milisesonds;
       }
-      ;
-    } else if (modifier == 'advice') {
+      
+    } else if (modifier === 'advice') {
       var advice = document.getElementById(param);
       if (advice) {
         this.advice_id = param;
       }
     }
-    ;
+    
   },
   element_containers: function() {
     if (this.containers === null) {
       this.containers = new HashMap();
       var parent = this.element.parentNode;
       //search up the DOM tree
-      while (parent != document) {
+      while (parent !== document) {
         var container = Vanadium.containers.get(parent);
         if (container) {
           container.add_element(this);
           this.containers.put(parent, container);
         }
-        ;
+        
         parent = parent.parentNode;
       }
-      ;
+      
     }
-    ;
+    
     return this.containers;
   },
   // context - the contect in which decoration_callback should be invoked
@@ -710,7 +706,7 @@ ElementValidation.prototype = {
     this.decorated = true;
     var self = this;
     var passed_and_failed = Vanadium.partition(element_validation_results, function(validation_result) {
-      return validation_result.success
+      return validation_result.success;
     });
     var passed = passed_and_failed[0];
     var failed = passed_and_failed[1];
@@ -724,7 +720,7 @@ ElementValidation.prototype = {
     } else {
       this.invalid = undefined; //mark this validation element as undefined
     }
-    ;
+    
     // add apropirate CSS class to the validated element's containers
     this.element_containers().each(function(_element, container) {
       container.decorate();
@@ -738,22 +734,22 @@ ElementValidation.prototype = {
       if (advice || validation_result.advice_id) {
         advice = advice || document.getElementById(validation_result.advice_id);
         if (advice) {
-          $(advice).addClass(Vanadium.config.advice_class);
-          var advice_is_empty = advice.childNodes.length == 0
-          if (advice_is_empty || $(advice).hasClass(Vanadium.empty_advice_marker_class)) {
-            $(advice).addClass(Vanadium.empty_advice_marker_class);
-            $(advice).append("<span>" + validation_result.message + "</span>");
+          jQuery(advice).addClass(Vanadium.config.advice_class);
+          var advice_is_empty = advice.childNodes.length === 0;
+          if (advice_is_empty || jQuery(advice).hasClass(Vanadium.empty_advice_marker_class)) {
+            jQuery(advice).addClass(Vanadium.empty_advice_marker_class);
+            jQuery(advice).append("<span>" + validation_result.message + "</span>");
           }
-          ;
-          $(advice).show();
+          
+          jQuery(advice).show();
         } else {
           advice = self.create_advice(validation_result);
         }
-        ;
+        
       } else {
         advice = self.create_advice(validation_result);
       }
-      ;
+      
       Vanadium.addValidationClass(advice, false);
     });
   },
@@ -764,15 +760,15 @@ ElementValidation.prototype = {
     // so we won't get the result imediately. In that case the provided decoration callback
     // will be invoked on return from asynchronous callback
     // It is used by Ajax based server-side validation
-    if(!this.virgin)
-      this.decorate(this.validate(this, this.decorate));
+    if(!this.virgin) {
+      this.decorate(this.validate(this, this.decorate)); }
   },
   create_advice: function(validation_result) {
     var span = document.createElement("span");
     this.created_advices.push(span);
-    $(span).addClass(Vanadium.config.advice_class);
-    $(span).html(validation_result.message);
-    $(this.element).after(span);
+    jQuery(span).addClass(Vanadium.config.advice_class);
+    jQuery(span).html(validation_result.message);
+    jQuery(this.element).after(span);
     return span;
   },
   reset: function() {
@@ -782,28 +778,28 @@ ElementValidation.prototype = {
     //    });
     var element_advice = document.getElementById(this.advice_id);
     if (element_advice) {
-      if ($(element_advice).hasClass(Vanadium.empty_advice_marker_class)) {
-        $(element_advice).empty();
+      if (jQuery(element_advice).hasClass(Vanadium.empty_advice_marker_class)) {
+        jQuery(element_advice).empty();
       }
-      $(element_advice).hide();
+      jQuery(element_advice).hide();
     }
     Vanadium.each(this.validations, function() {
       var advice = document.getElementById(this.adviceId);
       if (advice) {
-        if ($(advice).hasClass(Vanadium.empty_advice_marker_class)) {
-          $(advice).empty();
+        if (jQuery(advice).hasClass(Vanadium.empty_advice_marker_class)) {
+          jQuery(advice).empty();
         }
-        $(advice).hide();
+        jQuery(advice).hide();
       }
-      ;
+      
     });
 
     var created_advice = this.created_advices.pop();
-    while (!(created_advice === undefined)) {
-      $(created_advice).remove();
+    while (created_advice !== undefined) {
+      jQuery(created_advice).remove();
       created_advice = this.created_advices.pop();
     }
-    ;
+    
     Vanadium.removeValidationClass(this.element);
   },
   //
@@ -813,16 +809,16 @@ ElementValidation.prototype = {
    * makes the validation wait the alotted time from the last keystroke
    */
   deferValidation: function() {
-    if (this.wait >= 300) this.reset();
+    if (this.wait >= 300) { this.reset(); }
     var self = this;
     if (self.timeout) clearTimeout(self.timeout);
     self.timeout = setTimeout(function() {
-      $(self.element).trigger('validate');
+      jQuery(self.element).trigger('validate');
     }, self.wait);
   },
   deferReset: function() {
     var self = this;
-    if (self.reset_timeout) clearTimeout(self.reset_timeout);
+    if (self.reset_timeout) { clearTimeout(self.reset_timeout);}
     self.reset_timeout = setTimeout(function() {
       self.reset();
     }, Vanadium.config.reset_defer_timeout);
@@ -837,14 +833,14 @@ ElementValidation.prototype = {
 
     if (!this.only_on_submit) {
       this.observe();
-      $(self.element).bind('validate', function() {
-        self.validateAndDecorate.call(self)
+      jQuery(self.element).bind('validate', function() {
+        self.validateAndDecorate.call(self);
       });
-      $(self.element).bind('defer_validation', function() {
-        self.deferValidation.call(self)
+      jQuery(self.element).bind('defer_validation', function() {
+        self.deferValidation.call(self);
       });
-      $(self.element).bind('reset', function() {
-        self.reset.call(self)
+      jQuery(self.element).bind('reset', function() {
+        self.reset.call(self);
       });
     }
 
@@ -853,43 +849,43 @@ ElementValidation.prototype = {
     var element = this.element;
     var elementType = Vanadium.getElementType(element);
     var self = this;
-    $(element).focus(function() {
+    jQuery(element).focus(function() {
       self.virgin = false;
     });
     switch (elementType) {
       case Vanadium.CHECKBOX:
-        $(element).click(function() {
+        jQuery(element).click(function() {
           //TODO check db click !!!
           self.virgin = false; //this is here 'cos safari do not focus on checkboxes
-          $(self.element).trigger('validate');
+          jQuery(self.element).trigger('validate');
         });
         break;
       //TODO check if checkboxes support on-change too. and if yes handle it!
       // let it run into the next to add a change event too
       case Vanadium.SELECT:
       case Vanadium.FILE:
-        $(element).change(function() {
-          $(element).trigger('validate');
+        jQuery(element).change(function() {
+          jQuery(element).trigger('validate');
         });
         break;
       default:
-        $(element).keydown(function(e) {
-          if (e.keyCode != 9) {//no tabulation as it changes focus
-            $(element).trigger('reset');
+        jQuery(element).keydown(function(e) {
+          if (e.keyCode !== 9) {//no tabulation as it changes focus
+            jQuery(element).trigger('reset');
           }
-          ;
+          
         });
 
         if (!this.only_on_blur) {
-          $(element).keyup(function(e) {
-            if (e.keyCode != 9) {//no tabulation as it changes focus
-              $(element).trigger('defer_validation');
+          jQuery(element).keyup(function(e) {
+            if (e.keyCode !== 9) {//no tabulation as it changes focus
+              jQuery(element).trigger('defer_validation');
             }
-            ;
+            
           });
-        };
-        $(element).blur(function() {
-          $(element).trigger('validate');
+        }
+        jQuery(element).blur(function() {
+          jQuery(element).trigger('validate');
         });
     }
   }
@@ -899,8 +895,8 @@ ElementValidation.prototype = {
 
 
 var Validation = function(element, validation_type, param, advice_id) {
-  this.initialize(element, validation_type, param, advice_id)
-}
+  this.initialize(element, validation_type, param, advice_id);
+};
 
 Validation.prototype = {
   initialize: function(element, validation_type, param, advice_id) {
@@ -911,7 +907,7 @@ Validation.prototype = {
     this.adviceId = advice_id;
     var advice = document.getElementById(advice_id);
     if (advice) {
-      $(advice).addClass(Vanadium.config.advice_class);
+      jQuery(advice).addClass(Vanadium.config.advice_class);
     }
     if(this.validation_type.init){//Vanadium.isFunction(this.validation_type.init)){
       this.validation_type.init(this); //this give us oportunity to define in validation_type scope activity which will be performed on its instance initialisation
@@ -921,17 +917,17 @@ Validation.prototype = {
     if (typeof(message) === "string") {
       return message;
     } else if (typeof(message) === "function") {
-      return message.call(this, $(this.element).val(), this.param);
+      return message.call(this, jQuery(this.element).val(), this.param);
     }
   },
   validMessage: function() {
-    return this.emmit_message(this.validation_type.validMessage()) || 'ok'
+    return this.emmit_message(this.validation_type.validMessage()) || 'ok';
   },
   invalidMessage: function() {
-    return this.emmit_message(this.validation_type.invalidMessage()) || 'error'
+    return this.emmit_message(this.validation_type.invalidMessage()) || 'error';
   },
   test: function(decoration_context, decoration_callback) {
-    return this.validation_type.validationFunction.call(this, $(this.element).val(), this.param, this, decoration_context, decoration_callback);
+    return this.validation_type.validationFunction.call(this, jQuery(this.element).val(), this.param, this, decoration_context, decoration_callback);
   },
   // decoration_context - the contect in which decoration_callback should be invoked
   // decoration_callback - the decoration used by asynchronous validation
@@ -939,20 +935,20 @@ Validation.prototype = {
     var return_value = {
       success: false,
       message: "Received invalid return value."
-    }
+    };
     var validation_result = this.test(decoration_context, decoration_callback);
     if (typeof validation_result === "boolean") {
       return {
         success: validation_result,
         advice_id: this.adviceId,
         message: (validation_result ? this.validMessage() : this.invalidMessage())
-      }
+      };
     } else if (typeof validation_result === "object") {
-      $.extend.apply(return_value, validation_result);
+      jQuery.extend.apply(return_value, validation_result);
     }
     return return_value;
   }
-}
+};
 
 //-------------------- vanadium-types.js -----------------------------
 
@@ -978,7 +974,7 @@ Vanadium.Type.prototype = {
     return this.error_message;
   },
   toString: function() {
-    return "className:" + this.className + " message:" + this.message + " error_message:" + this.error_message
+    return "className:" + this.className + " message:" + this.message + " error_message:" + this.error_message;
   },
   init: function(parameter) {
     if (this.init) {
@@ -990,20 +986,20 @@ Vanadium.Type.prototype = {
 Vanadium.setupValidatorTypes = function() {
 
   Vanadium.addValidatorType('empty', function(v) {
-    return  ((v == null) || (v.length == 0));
+    return  ((v === null) || (v.length === 0));
   });
 
   Vanadium.addValidatorTypes([
     ['equal', function(v, p) {
-      return v == p;
+      return v === p;
     }, function (_v, p) {
-      return 'The value should be equal to <span class="' + Vanadium.config.message_value_class + '">' + p + '</span>.'
+      return 'The value should be equal to <span class="' + Vanadium.config.message_value_class + '">' + p + '</span>.';
     }],
     //
     ['equal_ignore_case', function(v, p) {
-      return v.toLowerCase() == p.toLowerCase();
+      return v.toLowerCase() === p.toLowerCase();
     }, function (_v, p) {
-      return 'The value should be equal to <span class="' + Vanadium.config.message_value_class + '">' + p + '</span>.'
+      return 'The value should be equal to <span class="' + Vanadium.config.message_value_class + '">' + p + '</span>.';
     }],
     //
     ['required', function(v) {
@@ -1015,9 +1011,9 @@ Vanadium.setupValidatorTypes = function() {
     }, 'Must be accepted!'],
     //
     ['integer', function(v) {
-      if (Vanadium.validators_types['empty'].test(v)) return true;
+      if (Vanadium.validators_types['empty'].test(v)) { return true; }
       var f = parseFloat(v);
-      return (!isNaN(f) && f.toString() == v && Math.round(f) == f);
+      return (!isNaN(f) && f.toString() === v && Math.round(f) === f);
     }, 'Please enter a valid integer in this field.'],
     //
     ['number', function(v) {
@@ -1033,14 +1029,14 @@ Vanadium.setupValidatorTypes = function() {
     }, 'Please use numbers only in this field. please avoid spaces or other characters such as dots or commas.'],
     //
     ['alpha', function (v) {
-      return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v)   //% C0 - FF (Ë - Ø); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+      return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z\u00C0-\u00FF\u0100-\u017E\u0391-\u03D6]+$/.test(v);   //% C0 - FF (? - ?); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
     }, 'Please use letters only in this field.'],
     //
     ['asciialpha', function (v) {
-      return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z]+$/.test(v)   //% C0 - FF (Ë - Ø); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
+      return Vanadium.validators_types['empty'].test(v) || /^[a-zA-Z]+$/.test(v);   //% C0 - FF (? - ?); 100 - 17E (? - ?); 391 - 3D6 (? - ?)
     }, 'Please use ASCII letters only (a-z) in this field.'],
     ['alphanum', function(v) {
-      return Vanadium.validators_types['empty'].test(v) || !/\W/.test(v)
+      return Vanadium.validators_types['empty'].test(v) || !/\W/.test(v);
     }, 'Please use only letters (a-z) or numbers (0-9) only in this field. No spaces or other characters are allowed.'],
     //
     ['date', function(v) {
@@ -1049,21 +1045,19 @@ Vanadium.setupValidatorTypes = function() {
     }, 'Please enter a valid date.'],
     //
     ['email', function (v) {
-      return (Vanadium.validators_types['empty'].test(v)
-              ||
-              /\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$/.test(v))
+      return (Vanadium.validators_types['empty'].test(v) || /\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$/.test(v));
     }, 'Please enter a valid email address. For example fred@domain.com .'],
     //
     ['url', function (v) {
-      return Vanadium.validators_types['empty'].test(v) || /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i.test(v)
+      return Vanadium.validators_types['empty'].test(v) || /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i.test(v);
     }, 'Please enter a valid URL.'],
     //
     ['date_au', function(v) {
-      if (Vanadium.validators_types['empty'].test(v)) return true;
+      if (Vanadium.validators_types['empty'].test(v)) { return true; }
       var regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
       if (!regex.test(v)) return false;
       var d = new Date(v.replace(regex, '$2/$1/$3'));
-      return ( parseInt(RegExp.$2, 10) == (1 + d.getMonth()) ) && (parseInt(RegExp.$1, 10) == d.getDate()) && (parseInt(RegExp.$3, 10) == d.getFullYear() );
+      return ( parseInt(RegExp.$2, 10) === (1 + d.getMonth()) ) && (parseInt(RegExp.$1, 10) === d.getDate()) && (parseInt(RegExp.$3, 10) === d.getFullYear() );
     }, 'Please use this date format: dd/mm/yyyy. For example 17/03/2006 for the 17th of March, 2006.'],
     //
     ['currency_dollar', function(v) {
@@ -1071,7 +1065,7 @@ Vanadium.setupValidatorTypes = function() {
       // [$]1###+[.##]
       // [$]0.##
       // [$].##
-      return Vanadium.validators_types['empty'].test(v) || /^\$?\-?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}\d*(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/.test(v)
+      return Vanadium.validators_types['empty'].test(v) || /^\$?\-?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}\d*(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/.test(v);
     }, 'Please enter a valid $ amount. For example $100.00 .'],
     //
     ['selection', function(v, elm) {
@@ -1089,78 +1083,78 @@ Vanadium.setupValidatorTypes = function() {
     ['length',
       function (v, p) {
         if (p === undefined) {
-          return true
+          return true;
         } else {
-          return v.length == parseInt(p)
+          return v.length === parseInt(p)
         }
-        ;
+        
       },
       function (_v, p) {
-        return 'The value should be <span class="' + Vanadium.config.message_value_class + '">' + p + '</span> characters long.'
+        return 'The value should be <span class="' + Vanadium.config.message_value_class + '">' + p + '</span> characters long.';
       }
     ],
     //
     ['min_length',
       function (v, p) {
         if (p === undefined) {
-          return true
+          return true;
         } else {
-          return v.length >= parseInt(p)
+          return v.length >= parseInt(p);
         }
-        ;
+        
       },
       function (_v, p) {
-        return 'The value should be at least <span class="' + Vanadium.config.message_value_class + '">' + p + '</span> characters long.'
+        return 'The value should be at least <span class="' + Vanadium.config.message_value_class + '">' + p + '</span> characters long.';
       }
     ],
     ['max_length',
       function (v, p) {
         if (p === undefined) {
-          return true
+          return true;
         } else {
-          return v.length <= parseInt(p)
+          return v.length <= parseInt(p);
         }
-        ;
+        
       },
       function (_v, p) {
-        return 'The value should be at most <span class="' + Vanadium.config.message_value_class + '">' + p + '</span> characters long.'
+        return 'The value should be at most <span class="' + Vanadium.config.message_value_class + '">' + p + '</span> characters long.';
       }
     ],
     ['same_as',
       function (v, p) {
         if (p === undefined) {
-          return true
+          return true;
         } else {
           var exemplar = document.getElementById(p);
-          if (exemplar)
-            return v == exemplar.value;
-          else
-            return false;
+          if (exemplar) {
+            return v === exemplar.value;
+         } else {
+            return false; }
         }
-        ;
+        
       },
       function (_v, p) {
         var exemplar = document.getElementById(p);
-        if (exemplar)
-          return 'The value should be the same as <span class="' + Vanadium.config.message_value_class + '">' + ($(exemplar).attr('name') || exemplar.id) + '</span> .';
-        else
-          return 'There is no exemplar item!!!'
+        if (exemplar) {
+          return 'The value should be the same as <span class="' + Vanadium.config.message_value_class + '">' + (jQuery(exemplar).attr('name') || exemplar.id) + '</span> .';
+        } else {
+          return 'There is no exemplar item!!!'; }
       },
       "",
       function(validation_instance) {
         var exemplar = document.getElementById(validation_instance.param);
         if (exemplar){
-          $(exemplar).bind('validate', function(){
-            $(validation_instance.element).trigger('validate');
+          jQuery(exemplar).bind('validate', function(){
+            jQuery(validation_instance.element).trigger('validate');
           });
         }
       }
     ],
     ['ajax',
       function (v, p, validation_instance, decoration_context, decoration_callback) {
-        if (Vanadium.validators_types['empty'].test(v)) return true;
+        if (Vanadium.validators_types['empty'].test(v)) { return true; }
         if (decoration_context && decoration_callback) {
-          $.getJSON(p, {value: v, id: validation_instance.element.id}, function(data) {
+          jQuery.getJSON(p, {value: v, id: validation_instance.element.id}, function(data) {
             decoration_callback.apply(decoration_context, [[data], true]);
           });
         }
@@ -1169,8 +1163,8 @@ Vanadium.setupValidatorTypes = function() {
     ,
     ['format',
       function(v, p) {
-        var params = p.match(/^\/(((\\\/)|[^\/])*)\/(((\\\/)|[^\/])*)$/);        
-        if (params.length == 7) {
+        var params = p.match(/^\/(((\\\/)|[^\/])*)\/(((\\\/)|[^\/])*)$/);
+        if (params.length === 7) {
           var pattern = params[1];
           var attributes = params[4];
           try
@@ -1180,22 +1174,22 @@ Vanadium.setupValidatorTypes = function() {
           }
           catch(err)
           {
-            return false
+            return false;
           }
         } else {
-          return false
+          return false;
         }
       },
       function (_v, p) {
         var params = p.split('/');
-        if (params.length == 3 && params[0] == "") {
+        if (params.length === 3 && params[0] === "") {
           return 'The value should match the <span class="' + Vanadium.config.message_value_class + '">' + p.toString() + '</span> pattern.';
         } else {
           return 'provided parameter <span class="' + Vanadium.config.message_value_class + '">' + p.toString() + '</span> is not valid Regexp pattern.';
         }
       }
     ]
-  ])
+  ]);
 
   if (typeof(VanadiumCustomValidationTypes) !== "undefined" && VanadiumCustomValidationTypes) Vanadium.addValidatorTypes(VanadiumCustomValidationTypes);
 };
@@ -1205,16 +1199,16 @@ Vanadium.setupValidatorTypes = function() {
 
 //-------------------- vanadium-init.js -----------------------------
 
-$(document).ready(function () {
+jQuery(document).ready(function () {
   if (typeof(VanadiumConfig) === "object" && VanadiumConfig) {
     Vanadium.each(VanadiumConfig, function(k, v) {
       Vanadium.config[k] = v;
-    })
+    });
   }
   if (typeof(VanadiumRules) === "object" && VanadiumRules) {
     Vanadium.each(VanadiumRules, function(k, v) {
       Vanadium.rules[k] = v;
-    })
+    });
   }
   Vanadium.init();
 });
